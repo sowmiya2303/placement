@@ -1,0 +1,41 @@
+)#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_LINE_LENGTH 1000
+
+int main() {
+    FILE *file;
+    char fileName[] = "original.txt";
+    char line[MAX_LINE_LENGTH];
+    int lineNumber, currentLine = 0;
+
+    printf("Enter the line number to replace: ");
+    scanf("%d", &lineNumber);
+
+    // Open the file in read-write mode
+    file = fopen(fileName, "r+");
+    if (file == NULL) {
+        printf("Error opening the file.\n");
+        return 1;
+    }
+
+    // Read each line from the file and overwrite the specified line
+    while (fgets(line, MAX_LINE_LENGTH, file) != NULL) {
+        currentLine++;
+        if (currentLine == lineNumber) {
+            // Replace this line with the new line
+            printf("Enter the new line: ");
+            fgets(line, MAX_LINE_LENGTH, stdin);
+            fseek(file, -strlen(line), SEEK_CUR); // Move file pointer back to the start of the line
+            fprintf(file, "%s", line); // Write the new line
+            break; // No need to continue reading the file
+        }
+    }
+
+    // Close the file
+    fclose(file);
+
+    printf("Line %d replaced successfully.\n", lineNumber);
+
+    return 0;
+}
